@@ -1,0 +1,20 @@
+{
+    "name": "rozeo/discord",
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "rozeo",
+            "email": "st.prog0908@gmail.com"
+        }
+    ],
+    "require": {},
+
+    "autoload": {
+        "psr-4": {
+            "Rozeo\\Discord\\": "src/"
+        }
+    }
+}
