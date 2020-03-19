@@ -3,8 +3,9 @@
 namespace Rozeo\Discord\Repository;
 
 use Rozeo\Discord\Entity\Member;
+use JsonSerializable;
 
-class Members
+class Members implements JsonSerializable
 {
     private $members;
 
@@ -22,5 +23,12 @@ class Members
     public function findById(int $id)
     {
         return $this->members[$id] ?? null;
+    }
+
+    public function jsonSerialize()
+    {
+        return array_map(function ($member) {
+            return $member->toArray();
+        }, $this->members);
     }
 }

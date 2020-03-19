@@ -2,20 +2,41 @@
 
 namespace Rozeo\Discord\Entity;
 
-class Role
+class Role implements EntityInterface
 {
+    /**
+     * @var int
+     */
     private $id;
 
+    /**
+     * @var string
+     */
     private $name;
-    
+
+    /**
+     * @var int
+     */
     private $permissions;
     
+    /**
+     * @var int
+     */
     private $position;
-    
+
+    /**
+     * @var bool
+     */
     private $mentionable;
-    
+
+    /**
+     * @var array?
+     */
     private $hoist;
-    
+
+    /**
+     * @var string
+     */
     private $color;
 
     public static function fromArray(array $arr)
@@ -72,5 +93,18 @@ class Role
     public function getColor()
     {
         return $this->color;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'permissions' => $this->permissions,
+            'position' => $this->position,
+            'mentionable' => $this->mentionable,
+            'hoist' => $this->hoist,
+            'color' => $this->color,
+        ];
     }
 }

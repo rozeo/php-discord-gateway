@@ -87,9 +87,12 @@ class DiscordGateway
             return;
         }
 
-        if ($payload->getOpCode() === OpCode::DISPATCH) {
+        if ($payload->getOpCode() === OpCode::DISPATCH && $payload->getEventName() === "GUILD_CREATE") {
             $guild = Guild::fromArray($payload->getData());
-            var_dump($guild);
+
+            file_put_contents(__DIR__ . "/../test.json", json_encode(
+                $guild->members()
+            ));
         }
     }
 
