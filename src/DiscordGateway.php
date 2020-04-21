@@ -27,6 +27,11 @@ class DiscordGateway
 
     private $channel;
 
+    /**
+     * @var Closure
+     */
+    private $callback;
+
     public function __construct(string $token)
     {
         $this->token = $token;
@@ -38,6 +43,11 @@ class DiscordGateway
 
         $this->handlers['ready'] = function ($payload) {
         };
+    }
+
+    public function setCallback(Closure $closure)
+    {
+        $this->callback = $closure;
     }
 
     public function bindEvent(string $eventName, Closure $handler)
@@ -58,8 +68,6 @@ class DiscordGateway
                 if (!$ret) {
                     continue;
                 }
-
-                var_dump($ret);
 
                 $payload = Payload::fromJsonString($ret->data);
                 $self->lastSeqNumber = $payload->getSequence();
@@ -87,12 +95,8 @@ class DiscordGateway
             return;
         }
 
-        if ($payload->getOpCode() === OpCode::DISPATCH && $payload->getEventName() === "GUILD_CREATE") {
-            $guild = Guild::fromArray($payload->getData());
-
-            file_put_contents(__DIR__ . "/../test.json", json_encode(
-                $guild->members()
-            ));
+        if ($payload->getOpCode() === OpCode::DISPATCH) {
+            ($this->callback)($payload);
         }
     }
 

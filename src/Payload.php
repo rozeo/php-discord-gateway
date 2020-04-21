@@ -71,8 +71,6 @@ class Payload implements JsonSerializable
             $arr['t'] = $this->t;
         }
 
-        var_dump($arr);
-
         return $arr;
     }
 }
