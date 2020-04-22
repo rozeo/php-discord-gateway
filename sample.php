@@ -2,15 +2,19 @@
 
 require __DIR__ . "/vendor/autoload.php";
 
-$token = '';
+$token = '****';
 $d = new Rozeo\Discord\DiscordGateway($token);
 
-$d->setCallback(function (Rozeo\Discord\Payload $payload) {
-    if ($payload->getEventName() === 'MESSAGE_CREATE') {
-        $data = $payload->getData();
+$d->bindEvent(Rozeo\Discord\Event::READY, function () {
+    echo "Discord bot is ready!\n\n";
+});
 
-        echo sprintf("user: %s, message: %s\n", $data["author"]["username"], $data['content']);  
-    }
+$d->bindEvent(Rozeo\Discord\Event::MESSAGE_CREATE, function (Rozeo\Discord\Entity\Message $message) {
+    echo sprintf("Name: %s %s\n  text: %s\n",
+        $message->getAuthor()->getUsername(),
+        $message->getTimestamp()->format('Y/m/d H:i:s'),
+        $message->getContent()
+    );
 });
 
 $d->start();

@@ -77,17 +77,25 @@ class DiscordGateway
 
     private function eventDispatch(Payload $payload)
     {
-        if ($payload->getOpCode() === OpCode::HELLO) {
-            $this->registerIndentity(PayloadDataType\Hello::fromPayload($payload));
-            return;
-        }
+        switch ($payload->getOpCode()) {
+            case OpCode::HELLO:
+                $this->registerIndentity(PayloadDataType\Hello::fromPayload($payload));
+                break;
 
-        if ($payload->getOpCode() === OpCode::DISPATCH) {
-            if (array_key_exists($payload->getEventName(), $this->handlers)) {
-                $factory = Entity\Factory\EntityFactory::make($payload);
-                ($this->handlers[$payload->getEventName()])($factory);
-            }
-        }
+            case OpCode::DISPATCH:
+                if (array_key_exists($payload->getEventName(), $this->handlers)) {
+                    $factory = Entity\Factory\EntityFactory::make($payload);
+                    ($this->handlers[$payload->getEventName()])($factory);
+                }
+                break;
+
+           case OpCode::HEARTBEAT_ACK:
+               break;
+
+           default:
+                echo "Unhandled opcode: {$payload->getOpCode()}\n payload: " .
+                    json_encode($payload) . "\n\n";
+        }    
     }
 
     private function registerIndentity(PayloadDataType\Hello $payload)
@@ -100,12 +108,17 @@ class DiscordGateway
         $identify = new PayloadDataType\Identify($this->token);
         $retPayload = new Payload(OpCode::IDENTIFY, $identify);
 
-        $this->ws->send(json_encode($retPayload));
+        $this->sendPayload($retPayload);
     }
 
     private function sendHeartBeat()
     {
         $payload = new Payload(OpCode::HEARTBEAT, [], $this->lastSeqNumber);
+        $this->sendPayload($payload);
+    }
+
+    public function sendPayload(Payload $payload)
+    {
         $this->ws->send(json_encode($payload));
     }
 }

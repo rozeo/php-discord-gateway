@@ -8,4 +8,5 @@ class OpCode
     const HEARTBEAT = 1;
     const IDENTIFY = 2;
     const HELLO = 10;
+    const HEARTBEAT_ACK = 11;
 }
