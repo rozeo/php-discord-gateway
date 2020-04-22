@@ -12,10 +12,6 @@ class DiscordGateway
     private $ws;
     private $token;
 
-    const OPCODE_EVENT_MAP = [
-        'READY' => 'ready',
-    ];
-
     private $handlers = [];
 
     private $heartBeatInterval;
@@ -40,19 +36,11 @@ class DiscordGateway
         $this->killed = false;
 
         $this->ws = new WebSocket("gateway.discord.gg", "/?v=6&encoding=json", 443);
-
-        $this->handlers['ready'] = function ($payload) {
-        };
-    }
-
-    public function setCallback(Closure $closure)
-    {
-        $this->callback = $closure;
     }
 
     public function bindEvent(string $eventName, Closure $handler)
     {
-        $handlers[$eventName] = $handler;
+        $this->handlers[strtoupper($eventName)] = $handler;
         return $this;
     }
 
@@ -96,7 +84,9 @@ class DiscordGateway
         }
 
         if ($payload->getOpCode() === OpCode::DISPATCH) {
-            ($this->callback)($payload);
+            if (array_key_exists($payload->getEventName(), $this->handlers)) {
+                ($this->handlers[$payload->getEventName()])($payload);
+            }
         }
     }
 

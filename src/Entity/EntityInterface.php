@@ -4,7 +4,9 @@ namespace Rozeo\Discord\Entity;
 
 interface EntityInterface
 {
-    public static function fromArray(array $arr);
+    public function __construct(array $payloads);
 
     public function toArray(): array;
+
+    public function toString(): string;
 }

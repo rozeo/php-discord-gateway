@@ -19,7 +19,7 @@ class CategoryChannel
      */
     private $bitrate;
     
-    public function fromArray(array $arr)
+    public static function fromArray(array $arr)
     {
         $self = new self();
 
