@@ -5,7 +5,6 @@ namespace Rozeo\Discord;
 use Closure;
 use Swoole;
 use Co;
-use Rozeo\Discord\Entity\Guild;
 
 class DiscordGateway
 {
@@ -85,7 +84,8 @@ class DiscordGateway
 
         if ($payload->getOpCode() === OpCode::DISPATCH) {
             if (array_key_exists($payload->getEventName(), $this->handlers)) {
-                ($this->handlers[$payload->getEventName()])($payload);
+                $factory = Entity\Factory\EntityFactory::make($payload);
+                ($this->handlers[$payload->getEventName()])($factory);
             }
         }
     }
